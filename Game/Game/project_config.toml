@@ -1,0 +1,7 @@
+# Project Configuration
+
+name = "ADP-UndoRedoTutorial"
+description = "Undo Redo Tutorial for Advanced Design Patterns"
+type = "app"
+
+requires = ["PlayBuffer"]
