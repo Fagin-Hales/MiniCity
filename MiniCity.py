@@ -40,11 +40,11 @@ def CheckIfGitChange():
 	global previousCommit
 	global latestCommit
 
-	result = RunGitCommand(["git", "log", "-n", "1", "--pretty=format:\"%H\"", "main"])
+	result = RunGitCommand(["git", "ls-remote", "origin", "HEAD"])
 
 	if(result[0]):
 		latestCommit = result[1]
-		latestCommit = latestCommit.replace('\"', "")
+		latestCommit = latestCommit.replace('\"', "").split('\t')[0]
 		if(latestCommit != previousCommit):
 			previousCommit = latestCommit
 			return True
