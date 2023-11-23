@@ -123,6 +123,9 @@ def PollForChanges():
 
 			for otherInfo in otherLogInfo:
 				file.write(otherInfo + "\n")
+	else:
+		print("No new git commit")
+
 				
 
 def RunForever():
@@ -131,5 +134,5 @@ def RunForever():
 	while not ticker.wait(WAIT_TIME_SECONDS):
 		PollForChanges()
 
-PollForChanges()
-# # RunForever()
+#PollForChanges()
+RunForever()
