@@ -8,9 +8,9 @@ import subprocess
 repo_path = 'C:\\Users\\FHales\\Documents\\MiniCityTest\\MiniCity'
 previousCommit = ""
 latestCommit = ""
+latestCommitMessage = ""
 
 #Log file variables
-timeFound = ""
 buildPassRelease = False
 buildPassDebug = False
 gitPass = False
@@ -99,6 +99,12 @@ def RunGitCommands():
 def PollForChanges():
 	global otherLogInfo
 	global unitTestsResults
+	global latestCommit
+	global latestCommitMessage
+	global gitPass
+	global buildPassDebug
+	global buildPassRelease
+
 
 	if(CheckIfGitChange()):
 		print("New git commit!")
@@ -107,14 +113,21 @@ def PollForChanges():
 		filename = filename.replace(':', '_')
 		otherLogInfo.clear()
 		unitTestsResults.clear()
+		
+		RunGitCommands()
+		RunBatchCommands()
+		result = RunGitCommand(["git", "log", "-n", "1", "--pretty=format:%s", latestCommit])
+		if(not result[0]):
+			gitPass = False
+			otherLogInfo.append(result[1])
+			latestCommit = ""
+		else:
+			latestCommitMessage = result[1]
 
 		with open("commit_Logs\\" + filename, 'w') as file:
 			file.write("Commit: " + latestCommit + "\n")
+			file.write("Message: " + latestCommitMessage + "\n")
 			file.write("Time: " + timeFound + "\n")
-
-			RunGitCommands()
-			RunBatchCommands()
-
 			file.write("Git status: " + str(gitPass) + "\n")
 			file.write("Release build status: " + str(buildPassRelease) + "\n")
 			file.write("Debug build status: " + str(buildPassDebug) + "\n\n")
