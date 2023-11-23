@@ -44,6 +44,7 @@ def CheckIfGitChange():
 
 	if(result[0]):
 		latestCommit = result[1]
+		latestCommit = latestCommit.replace('\"', "")
 		if(latestCommit != previousCommit):
 			previousCommit = latestCommit
 			return True
@@ -53,6 +54,10 @@ def CheckIfGitChange():
 		print(result[1])
 
 def RunBatchCommands():
+	global buildPassDebug
+	global buildPassRelease
+	global otherLogInfo
+
 	result = RunBatchFile(['VS_Build_Debug.bat'])
 	if(result[0]):
 		buildPassDebug = True
@@ -70,6 +75,9 @@ def RunBatchCommands():
 	otherLogInfo.append(result[1])
 
 def RunGitCommands():
+	global gitPass
+	global otherLogInfo
+
 	gitPass = True
 
 	result = RunGitCommand(["git", "clean", "-f"])
@@ -89,23 +97,29 @@ def RunGitCommands():
 
 
 def PollForChanges():
+	global otherLogInfo
+	global unitTestsResults
+
 	if(CheckIfGitChange()):
 		print("New git commit!")
 		timeFound = time.ctime()
 		filename = timeFound + "_" + latestCommit + ".log"
+		filename = filename.replace(':', '_')
 		otherLogInfo.clear()
 		unitTestsResults.clear()
 
-		with open("logs\\" + filename, 'w') as file:
+		with open("commit_Logs\\" + filename, 'w') as file:
 			file.write("Commit: " + latestCommit + "\n")
 			file.write("Time: " + timeFound + "\n")
 
 			RunGitCommands()
 			RunBatchCommands()
 
-			file.write("Git status: " + gitPass + "\n")
-			file.write("Release build status: " + buildPassRelease + "\n")
-			file.write("Debug build status: " + buildPassDebug + "\n")
+			file.write("Git status: " + str(gitPass) + "\n")
+			file.write("Release build status: " + str(buildPassRelease) + "\n")
+			file.write("Debug build status: " + str(buildPassDebug) + "\n\n")
+
+			file.write("Outputs: " + "\n")
 
 			for otherInfo in otherLogInfo:
 				file.write(otherInfo + "\n")
