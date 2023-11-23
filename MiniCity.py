@@ -5,7 +5,7 @@ import os
 import sys
 import subprocess
 
-repo_path = 'C:\\Users\\FHales\\Documents\\MiniCity'
+repo_path = 'C:\\Users\\FHales\\Documents\\MiniCityTest\\MiniCity'
 previousCommit = ""
 latestCommit = ""
 
@@ -44,7 +44,7 @@ def RunBatchCommands():
 	RunBatchFile(['VS_Build.bat'])
 
 def RunGitCommands():
-	RunGitCommand(["git", "clean"])
+	RunGitCommand(["git", "clean", "-f"])
 	RunGitCommand(["git", "reset"])
 	RunGitCommand(["git", "pull"])
 
