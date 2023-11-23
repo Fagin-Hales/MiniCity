@@ -15,7 +15,14 @@ void MainGameEntry(PLAY_IGNORE_COMMAND_LINE)
 // Called by PlayBuffer every frame (60 times a second!)
 bool MainGameUpdate(float elapsedTime)
 {
+	static float eTime = 0;
+	eTime += elapsedTime;
+
 	Play::ClearDrawingBuffer(Play::cBlue);
+
+	Play::DrawCircle(Vector2f{ (sin(eTime / 0.732f + 2.3215f) + 1) * DISPLAY_WIDTH / 2, (cos(eTime / 1.21321f) + 1) * DISPLAY_HEIGHT / 2 }, (sin(eTime * 5) + 1) * 30, Play::cRed);
+
+	Play::PresentDrawingBuffer();
 
 	return Play::KeyDown(VK_ESCAPE);
 }
