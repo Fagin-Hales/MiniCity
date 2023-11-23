@@ -14,7 +14,6 @@ def RunBatchFile(args):
 	try:
 		result = subprocess.run(args, shell=True, capture_output=True, check=True, cwd = repo_path)
 		return result.stdout.decode("ascii")
-		#print(result.stdout.decode("ascii"))
 	except subprocess.CalledProcessError as e:
 		print("Batch Command Error: \n", e.stdout.decode("ascii"))
 
@@ -41,7 +40,8 @@ def CheckIfGitChange():
 		return False
 
 def RunBatchCommands():
-	RunBatchFile(['VS_Build.bat'])
+	RunBatchFile(['VS_Build_Debug.bat'])
+	RunBatchFile(['VS_Build_Release.bat'])
 
 def RunGitCommands():
 	RunGitCommand(["git", "clean", "-f"])
