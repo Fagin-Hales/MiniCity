@@ -40,13 +40,17 @@ def CheckIfGitChange():
 	global previousCommit
 	global latestCommit
 
-	latestCommit = RunGitCommand(["git", "log", "-n", "1", "--pretty=format:\"%H\"", "master"])
-	#print(latestCommit)
-	if(latestCommit != previousCommit):
-		previousCommit = latestCommit
-		return True
+	result = RunGitCommand(["git", "log", "-n", "1", "--pretty=format:\"%H\"", "main"])
+
+	if(result[0]):
+		latestCommit = result[1]
+		if(latestCommit != previousCommit):
+			previousCommit = latestCommit
+			return True
+		else:
+			return False
 	else:
-		return False
+		print(result[1])
 
 def RunBatchCommands():
 	result = RunBatchFile(['VS_Build_Debug.bat'])
