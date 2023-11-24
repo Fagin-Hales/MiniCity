@@ -14,11 +14,11 @@ latestCommitMessage = ""
 buildPassRelease = False
 buildPassDebug = False
 gitPass = False
-unitTestsResults = []
+testsPass = False
+unitTestsResults = ""
 otherLogInfo = []
 
 def RunBatchFile(args):
-	#args = ['VS_Build.bat']
 	try:
 		result = subprocess.run(args, shell=True, capture_output=True, check=True, cwd = repo_path)
 		return [ True, result.stdout.decode("ascii")]
@@ -34,6 +34,13 @@ def RunGitCommand(args):
 		print("Git Command Error: \n", e.stderr.decode("ascii"))
 		return [False, e.stderr.decode("ascii")]
 		
+def RunFile(args):
+	try:
+		result = subprocess.run(args[0], shell=True, capture_output=True, check=True, cwd = args[1])
+		return [ True, result.stdout.decode("ascii")]
+	except subprocess.CalledProcessError as e:
+		print("Command Error: \n", e.stdout.decode("ascii"))
+		return [False, e.stderr.decode("ascii")]
 
 def CheckIfGitChange():
 	global repo_path
@@ -102,6 +109,7 @@ def PollForChanges():
 	global latestCommit
 	global latestCommitMessage
 	global gitPass
+	global testsPass
 	global buildPassDebug
 	global buildPassRelease
 
@@ -112,10 +120,17 @@ def PollForChanges():
 		filename = timeFound + "_" + latestCommit + ".log"
 		filename = filename.replace(':', '_')
 		otherLogInfo.clear()
-		unitTestsResults.clear()
 		
 		RunGitCommands()
 		RunBatchCommands()
+
+		result = RunFile([["UnitTests.exe"],repo_path + "\\Game\\x64\\Release"]);
+		if(not result[0]):
+			testsPass = False
+		else:
+			testsPass = True
+		otherLogInfo.append(result[1])
+
 		result = RunGitCommand(["git", "log", "-n", "1", "--pretty=format:%s", latestCommit])
 		if(not result[0]):
 			gitPass = False
@@ -130,7 +145,8 @@ def PollForChanges():
 			file.write("Time: " + timeFound + "\n")
 			file.write("Git status: " + str(gitPass) + "\n")
 			file.write("Release build status: " + str(buildPassRelease) + "\n")
-			file.write("Debug build status: " + str(buildPassDebug) + "\n\n")
+			file.write("Debug build status: " + str(buildPassDebug) + "\n")
+			file.write("Unit tests status: " + str(testsPass) + "\n\n")
 
 			file.write("Outputs: " + "\n")
 
