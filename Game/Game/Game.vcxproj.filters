@@ -12,12 +12,9 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="catch_amalgamated.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="catch_amalgamated.hpp">
+    <ClInclude Include="FVector.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
